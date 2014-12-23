@@ -1,0 +1,27 @@
+application: econerdapi
+version: 0-1-1
+runtime: go
+api_version: go1
+
+handlers:
+  # Simple landing page
+- url: /
+  static_files: index.html
+  upload: index.html
+  secure: always
+  # Static assets
+- url: /static
+  static_dir: static 
+  secure: always   
+  # All fecthed items
+- url: /firehose
+  script: _go_app 
+  secure: always 
+  # Items that where referenced at least twice 
+- url: /curated
+  script: _go_app  
+  secure: always 
+  # Internal endpoint that kicks of new crawl 
+- url: /crawl
+  script: _go_app  
+  # login: admin    
