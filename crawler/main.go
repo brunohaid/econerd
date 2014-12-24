@@ -6,19 +6,19 @@ import (
 ) 
 
 type Item struct {
-	id 				string			`json:"id"`
+	id				string			`json:"id"`
 	title			string			`json:"title"`
 	author			[]Person 		`json:"author"`
 	published		time.Time		`json:"published"`
-	firstseen		time.Time		`json:"firstseen"`	
-	url				string			`json:"url"`	
+	firstseen		time.Time		`json:"firstseen"`
+	url				string			`json:"url"`
 	mentions		[]Mention 		`json:"mentions"`
 	body			string			`json:"body"`
 }
 
 type Mention struct {
-	Person 			Person			`json:"by"`
-	URL     		string			`json:"url"`
+	Person			Person			`json:"by"`
+	URL				string			`json:"url"`
 	Timestamp		time.Time 		`json:"timestamp"`
 }
 
@@ -30,8 +30,8 @@ type Person struct {
 
 // Settings definition
 type Config struct {
-    blogs    []string
-    twitterlist   string
+	blogs			[]string
+	twitterlist		string
 }
 
 // Init

@@ -2,12 +2,12 @@ package crawler
 
 import (
 	// Core libs
-    "time"
-    "log"
+	"time"
+	"log"
 
-    // The Interwebs   
-    rss "github.com/jteeuwen/go-pkg-rss"
-    "net/http"
+	// The Interwebs   
+	rss "github.com/jteeuwen/go-pkg-rss"
+	"net/http"
 )
 
 // Crawl a single blog from the list, look for optional digest items
@@ -31,9 +31,9 @@ func spawnsubscriber(uri string) {
 		// Build a new client
 		transport := http.Transport{}
 
-	    client := &http.Client{
-	        Transport: &transport,
-	    } 	
+		client := &http.Client{
+			Transport: &transport,
+		} 	
 
 		// Fetch feed and log errors
 		if err := feed.FetchClient(uri, client, nil); err != nil {
@@ -55,34 +55,34 @@ func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 	log.Printf("%d new item(s) in %s", len(newposts), feed.Url)
 
 	// Iterate through new items
-    for _, post := range newposts {
-    	// Read contents from ATOM or fallback on RSS
-    	var content string
+	for _, post := range newposts {
+		// Read contents from ATOM or fallback on RSS
+		var content string
 
-    	if post.Content == nil {
-    		content = post.Description
-    	} else {
-    		content = post.Content.Text
-    	}
+		if post.Content == nil {
+			content = post.Description
+		} else {
+			content = post.Content.Text
+		}
 
-    	// Get timestamp
-    	ts, _ := time.Parse("02/Jan/2006:15:04:05 -0700",post.PubDate)
+		// Get timestamp
+		ts, _ := time.Parse("02/Jan/2006:15:04:05 -0700",post.PubDate)
 
-    	author := Person{
-    		name: post.Author.Name,
-    	}
+		author := Person{
+			name: post.Author.Name,
+		}
 
-    	// Build proper item
-    	item := Item{
-    		url: 		post.Links[0].Href,
-    		author:		[]Person{author},
-    		title:		post.Title,
-    		published: 	ts,
-    		firstseen:	time.Now().UTC(),
-    		body: 		content,
-    	}
+		// Build proper item
+		item := Item{
+			url: 		post.Links[0].Href,
+			author:		[]Person{author},
+			title:		post.Title,
+			published: 	ts,
+			firstseen:	time.Now().UTC(),
+			body: 		content,
+		}
 
-    	// Send it off for processing
-        go Process(item)
-    }
+		// Send it off for processing
+		go Process(item)
+	}
 }
