@@ -15,7 +15,7 @@ func Crawlblogs() {
 	go spawnsubscriber("http://ftalphaville.ft.com/feed/")
 	go spawnsubscriber("http://www.bloombergview.com/rss")
 	go spawnsubscriber("https://medium.com/feed/bull-market")
-	go spawnsubscriber("http://www.interfluidity.com/feed")
+	// go spawnsubscriber("http://www.interfluidity.com/feed")
 }
 
 // Spawns a new reader
@@ -51,10 +51,38 @@ func feedhandler(feed *rss.Feed, newchannels []*rss.Channel) {
 }
 
 // Handling new items
-func itemhandler(feed *rss.Feed, ch *rss.Channel, newitems []*rss.Item) {
-	log.Printf("%d new item(s) in %s", len(newitems), feed.Url)
-    for _, item := range newitems {
-    	url := item.Links[0].Href
-        log.Println(item.Title,item.Author.Name,item.PubDate,url)
+func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
+	log.Printf("%d new item(s) in %s", len(newposts), feed.Url)
+
+	// Iterate through new items
+    for _, post := range newposts {
+    	// Read contents from ATOM or fallback on RSS
+    	var content string
+
+    	if post.Content == nil {
+    		content = post.Description
+    	} else {
+    		content = post.Content.Text
+    	}
+
+    	// Get timestamp
+    	ts, _ := time.Parse("02/Jan/2006:15:04:05 -0700",post.PubDate)
+
+    	author := Person{
+    		name: post.Author.Name,
+    	}
+
+    	// Build proper item
+    	item := Item{
+    		url: 		post.Links[0].Href,
+    		author:		[]Person{author},
+    		title:		post.Title,
+    		published: 	ts,
+    		firstseen:	time.Now().UTC(),
+    		body: 		content,
+    	}
+
+    	// Send it off for processing
+        go Process(item)
     }
 }

@@ -1,4 +1,4 @@
-package econonerd
+package main
 
 import (
     "fmt"
