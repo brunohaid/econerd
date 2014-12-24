@@ -2,4 +2,4 @@
 cron:
 - description: Fetch feeds and parse new items
   url: /crawl
-  schedule: every 5 mins
+  schedule: every 1 mins

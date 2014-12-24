@@ -2,14 +2,21 @@ package main
 
 import (
     "fmt"
+    "log"
     "net/http"
     "crawler"
 )
 
 func init() {
+	// Logio
+	log.Printf("Econonerd awakens")
+
+    // Init crawler
+    crawler.Init()
+
+	// Route calls (also keeps the server alive indefinitely)
     http.HandleFunc("/firehose", firehose)    
     http.HandleFunc("/curated", curated) 
-    http.HandleFunc("/crawl", crawler.Crawl)          
 }
 
 func firehose(w http.ResponseWriter, r *http.Request) {
