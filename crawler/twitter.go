@@ -2,11 +2,11 @@ package crawler
 
 import (
 	// Core libs
-   	"log"  
-    //"time"
+		"log"  
+	//"time"
 
-    // Comms
-    "github.com/ChimeraCoder/anaconda"
+	// Comms
+	"github.com/ChimeraCoder/anaconda"
 )
 
 // Our twitter list
@@ -29,8 +29,8 @@ func fetch() {
 	log.Printf("Results: %#v",searchResult)	
 	log.Printf("Error: %#v",err)		
 	for _ , tweet := range searchResult {
-	    log.Println(tweet.Text)
-	}   	
+		log.Println(tweet.Text)
+	}	
 }
 
 // Try translating an author into a twitter handle

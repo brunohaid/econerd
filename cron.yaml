@@ -1,5 +1,5 @@
 # https://cloud.google.com/appengine/docs/go/config/cron
-cron:
-- description: Fetch feeds and parse new items
-  url: /crawl
-  schedule: every 1 mins
+# cron:
+# - description: Fetch feeds and parse new items
+#  url: /crawl
+#  schedule: every 1 mins
