@@ -1,9 +1,6 @@
 package crawler
 
-import (
-	// Core libs
-    "log"
-)
+import "log"
 
 // Settings definition
 type Config struct {
@@ -20,5 +17,5 @@ func Init() {
 	Crawltwitter()
 
 	// Spawn RSS reader routines
-	Crawlblogs()			
+	// Crawlblogs()			
 }

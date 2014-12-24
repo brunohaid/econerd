@@ -1,11 +1,33 @@
-package main
+package econonerd
 
 import (
     "fmt"
     "log"
     "net/http"
     "crawler"
+    "time"
 )
+
+type Item struct {
+	ID 				string			`json:"id"`
+	Title			string			`json:"title"`
+	Author			[]Person 		`json:"author"`
+	FirstSeen		time.Time		`json:"firstseen"`	
+	URL				string			`json:"url"`	
+	mentions		[]Mention 		`json:"mentions"`
+}
+
+type Mention struct {
+	Person 			Person			`json:"by"`
+	URL     		string			`json:"url"`
+	Timestamp		time.Time 		`json:"timestamp"`
+}
+
+type Person struct {
+	Handle 			string			`json:"handle"`
+	Name 			string			`json:"name"`
+	Aliases			[]string		`json:"aka"`
+}
 
 func init() {
 	// Logio

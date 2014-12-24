@@ -14,6 +14,8 @@ import (
 func Crawlblogs() {
 	go spawnsubscriber("http://ftalphaville.ft.com/feed/")
 	go spawnsubscriber("http://www.bloombergview.com/rss")
+	go spawnsubscriber("https://medium.com/feed/bull-market")
+	go spawnsubscriber("http://www.interfluidity.com/feed")
 }
 
 // Spawns a new reader
@@ -32,7 +34,7 @@ func spawnsubscriber(uri string) {
 	    client := &http.Client{
 	        Transport: &transport,
 	    } 	
-    		
+
 		// Fetch feed and log errors
 		if err := feed.FetchClient(uri, client, nil); err != nil {
 			log.Printf("Error fetching %s: %+v", uri, err)

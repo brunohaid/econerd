@@ -2,18 +2,38 @@ package crawler
 
 import (
 	// Core libs
-    "time"
-    "log"  
+   	"log"  
+    //"time"
 
     // Comms
-    // "net/http"
+    "github.com/ChimeraCoder/anaconda"
 )
 
-// Fetch new tweets
-func Crawltwitter() {
-	// Get current timestamp
-	t := time.Now().UnixNano()
+// Our twitter list
+const twitterlist uint32 = 186333198
 
-	// Log start
-	log.Printf("Starting new twitter session at ",t)	
+var api = &anaconda.TwitterApi{}
+
+// Start new twitter crawler
+func Crawltwitter() {
+	// Build the api
+	
+
+	// Kick off fetch
+	go fetch()	
+}
+
+// Fetch the latest tweets
+func fetch() {
+	searchResult, err := api.GetSearch("golang", nil)
+	log.Printf("Results: %#v",searchResult)	
+	log.Printf("Error: %#v",err)		
+	for _ , tweet := range searchResult {
+	    log.Println(tweet.Text)
+	}   	
+}
+
+// Try translating an author into a twitter handle
+func GetHandle(author string) string {
+	return author
 }
