@@ -20,6 +20,12 @@ func TimeFromString(s string) (t time.Time) {
 			}
 		}
 
-		// Use current date as fallback
+		// Use current time as fallback
 		return time.Now()
+}
+
+// Takes URL and tries to reduce it to a canonical core
+// This does not have to be a valid URL anymore, just a unique identifier
+func GetCanoncical(s string) string {
+	return s
 }

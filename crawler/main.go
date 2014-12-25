@@ -8,6 +8,7 @@ import (
 // We keep them super simple for now
 type Item struct {
 	id				string			`json:"id"`
+	kind			string			`json:"type"`
 	title			string			`json:"title"`
 	author			string			`json:"author"`
 	published		time.Time		`json:"published"`
@@ -19,7 +20,7 @@ type Item struct {
 type Mention struct {
 	id				string			`json:"id"`	
 	itemid			string			`json:"itemid"`
-	platform		string			`json:"type"`
+	kind			string			`json:"type"`
 	author			string			`json:"by"`
 	url				string			`json:"url"`
 	timestamp		time.Time 		`json:"timestamp"`

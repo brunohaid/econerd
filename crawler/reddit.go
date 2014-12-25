@@ -10,11 +10,15 @@ import (
 	"net/http"
 )
 
+var (
+	// The subreddits we want to watch
+	subreddits = [...]string{ "Economics", "Finance" }
+)
+
 // Crawl a single blog from the list, look for optional digest items
-func Crawlblogs() {
+func Crawlreddit() {
 	// go spawnsubscriber("http://ftalphaville.ft.com/feed/")
 	go spawnsubscriber("http://www.bloombergview.com/rss")
-	go spawnsubscriber("http://www.reddit.com/r/Economics/new/.rss")
 	go spawnsubscriber("http://feeds.feedburner.com/EconomistsView")
 	// go spawnsubscriber("https://medium.com/feed/bull-market")
 	// go spawnsubscriber("http://www.interfluidity.com/feed") 
@@ -35,12 +39,12 @@ func Crawlblogs() {
 }
 
 // Spawns a new reader
-func spawnsubscriber(uri string) {
+func spawnsubscriber(subreddit string) {
 	// Spawn a new feed
-	feed := rss.New(10, true, feedhandler, itemhandler);
+	feed := rss.New(1, true, nil, itemhandler);
 
 	// Log start
-	log.Printf("Spawning subscriber to %s",uri)	
+	log.Printf("Started listening to subreddit %s",subreddit)	
 
 	// Loop endlessly
 	for {
@@ -61,11 +65,6 @@ func spawnsubscriber(uri string) {
 	}	
 }
 
-// Changes to bloags
-func feedhandler(feed *rss.Feed, newchannels []*rss.Channel) {
-	log.Printf("Subscribed to %d new channel(s) in %s", len(newchannels), feed.Url)
-}
-
 // Handling new items
 func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 	var content string
@@ -75,7 +74,7 @@ func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 
 	// Iterate through new items
 	for _, post := range newposts {
-		
+
 		// Read contents from ATOM or fallback on RSS
 		if post.Content == nil {
 			content = post.Description
