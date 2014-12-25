@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"crawler"
-	"time"
 )
 
 func init() {

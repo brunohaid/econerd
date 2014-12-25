@@ -14,8 +14,24 @@ import (
 func Crawlblogs() {
 	go spawnsubscriber("http://ftalphaville.ft.com/feed/")
 	go spawnsubscriber("http://www.bloombergview.com/rss")
-	go spawnsubscriber("https://medium.com/feed/bull-market")
-	// go spawnsubscriber("http://www.interfluidity.com/feed")
+	// go spawnsubscriber("http://www.reddit.com/r/Economics/new/.rss")
+	go spawnsubscriber("http://feeds.feedburner.com/EconomistsView")
+	// go spawnsubscriber("https://medium.com/feed/bull-market")
+	go spawnsubscriber("http://www.interfluidity.com/feed") 
+	// http://thereformedbroker.com/feed/ http://delong.typepad.com/sdj/atom.xml 
+	// http://feeds.feedburner.com/TheBigPicture http://feeds.feedburner.com/dealbreaker
+	// http://feeds.feedburner.com/marginalrevolution/feed http://alephblog.com/feed/
+	// http://feeds.feedburner.com/NakedCapitalism http://www.huffingtonpost.com/author/index.php?author=ben-walsh
+	// http://johnquiggin.com/feed/ http://crookedtimber.org/feed/ http://fistfulofeuros.net/feed/ http://feeds.feedburner.com/neweconomicperspectives/yMfv
+	// http://yanisvaroufakis.eu/feed/  http://feeds.feedburner.com/espeak http://krugman.blogs.nytimes.com/feed/ http://baselinescenario.com/feed/
+	// http://www.vox.com/authors/matthew-yglesias/rss http://www.project-syndicate.org/rss
+	// http://www.economist.com/sections/economics/rss.xml http://www.economist.com/blogs/freeexchange/atom.xml 
+	// http://blogs.wsj.com/economics/feed/ http://equitablegrowth.org/feed/ http://feeds.feedburner.com/JaredBernstein?format=xml
+	// http://feeds.feedburner.com/MacroAndOtherMarketMusings?format=xml http://www.slate.com/all.fulltext.matthew_yglesias.rss
+	// http://blogs.reuters.com/anatole-kaletsky/feed/ http://feeds.feedburner.com/blogspot/XqoV http://www.nextnewdeal.net/rss.xml
+	// http://maxspeak.net/feed/ https://www.pehub.com/feed/ http://feeds.feedburner.com/BronteCapital?format=xml http://coppolacomment.blogspot.com/feeds/posts/default
+	// http://noahpinionblog.blogspot.com/feeds/posts/default http://feeds.feedburner.com/EconomistsView
+
 }
 
 // Spawns a new reader
@@ -52,33 +68,27 @@ func feedhandler(feed *rss.Feed, newchannels []*rss.Channel) {
 
 // Handling new items
 func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
+	var content string
+
+	// Log
 	log.Printf("%d new item(s) in %s", len(newposts), feed.Url)
 
 	// Iterate through new items
 	for _, post := range newposts {
 		// Read contents from ATOM or fallback on RSS
-		var content string
-
 		if post.Content == nil {
 			content = post.Description
 		} else {
 			content = post.Content.Text
 		}
 
-		// Get timestamp
-		ts, _ := time.Parse("02/Jan/2006:15:04:05 -0700",post.PubDate)
-
-		author := Person{
-			name: post.Author.Name,
-		}
-
 		// Build proper item
 		item := Item{
 			url: 		post.Links[0].Href,
-			author:		[]Person{author},
+			author:		post.Author.Name,
 			title:		post.Title,
-			published: 	ts,
-			firstseen:	time.Now().UTC(),
+			published: 	TimeFromString(post.PubDate),
+			firstseen:	time.Now(),
 			body: 		content,
 		}
 

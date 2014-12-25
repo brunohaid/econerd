@@ -1,4 +1,4 @@
-application: econerdapi
+application: econonerdapi
 version: 0-1-1
 runtime: go
 api_version: go1

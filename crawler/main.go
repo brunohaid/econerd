@@ -5,33 +5,38 @@ import (
 	"time"
 ) 
 
+// We keep them super simple for now
 type Item struct {
 	id				string			`json:"id"`
 	title			string			`json:"title"`
-	author			[]Person 		`json:"author"`
+	author			string			`json:"author"`
 	published		time.Time		`json:"published"`
 	firstseen		time.Time		`json:"firstseen"`
 	url				string			`json:"url"`
-	mentions		[]Mention 		`json:"mentions"`
 	body			string			`json:"body"`
 }
 
 type Mention struct {
-	Person			Person			`json:"by"`
-	URL				string			`json:"url"`
-	Timestamp		time.Time 		`json:"timestamp"`
+	id				string			`json:"id"`	
+	itemid			string			`json:"itemid"`
+	platform		string			`json:"type"`
+	author			string			`json:"by"`
+	url				string			`json:"url"`
+	timestamp		time.Time 		`json:"timestamp"`
+	body			string			`json:"body"`
 }
 
 type Person struct {
-	handle 			string			`json:"handle"`
+	twitter			string			`json:"twitter"`
+	reddit			string			`json:"reddit"`
 	name 			string			`json:"name"`
-	aliases			[]string		`json:"aka"`
+	bio				string			`json:"bio"`
+	urls			[]string 		`json:"urls"`	
 }
 
-// Settings definition
-type Config struct {
-	blogs			[]string
-	twitterlist		string
+type Alias struct {
+	name 			string			`json:"name"`
+	handle 			string			`json:"handle"`	
 }
 
 // Init
