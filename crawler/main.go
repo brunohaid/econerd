@@ -7,6 +7,8 @@ import (
 
 // We keep them super simple for now
 type Item struct {
+	// To help with normalization we use the existing ids from reddit & twitter
+	// and normalize all other urls before MD5 hashing them
 	id				string			`json:"id"`
 	kind			string			`json:"type"`
 	title			string			`json:"title"`
@@ -18,12 +20,14 @@ type Item struct {
 }
 
 type Mention struct {
+	// See id comment at Item
 	id				string			`json:"id"`	
-	itemid			string			`json:"itemid"`
+	target			string			`json:"target"`
 	kind			string			`json:"type"`
 	author			string			`json:"by"`
 	url				string			`json:"url"`
-	timestamp		time.Time 		`json:"timestamp"`
+	mentioned		time.Time 		`json:"timestamp"`
+	title			string			`json:"title"`
 	body			string			`json:"body"`
 }
 
@@ -46,8 +50,11 @@ func Init() {
 	log.Println("Spinning up crawler")
 
 	// Kick off twitter crawling
-	Crawltwitter()
+	// crawltwitter()
 
 	// Spawn RSS reader routines
-	Crawlblogs()			
+	// crawlblogs()		
+
+	// Spawn Subreddit subscriber routines
+	crawlreddit()			
 }

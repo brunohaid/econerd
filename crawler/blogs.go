@@ -7,15 +7,13 @@ import (
 
 	// The Interwebs   
 	rss "github.com/jteeuwen/go-pkg-rss"
-	"net/http"
 )
 
 // Crawl a single blog from the list, look for optional digest items
-func Crawlblogs() {
+func crawlblogs() {
 	// go spawnsubscriber("http://ftalphaville.ft.com/feed/")
-	go spawnsubscriber("http://www.bloombergview.com/rss")
-	go spawnsubscriber("http://www.reddit.com/r/Economics/new/.rss")
-	go spawnsubscriber("http://feeds.feedburner.com/EconomistsView")
+	go spawnblogsubscriber("http://www.bloombergview.com/rss")
+	go spawnblogsubscriber("http://feeds.feedburner.com/EconomistsView")
 	// go spawnsubscriber("https://medium.com/feed/bull-market")
 	// go spawnsubscriber("http://www.interfluidity.com/feed") 
 	// http://thereformedbroker.com/feed/ http://delong.typepad.com/sdj/atom.xml 
@@ -35,24 +33,17 @@ func Crawlblogs() {
 }
 
 // Spawns a new reader
-func spawnsubscriber(uri string) {
+func spawnblogsubscriber(uri string) {
 	// Spawn a new feed
-	feed := rss.New(10, true, feedhandler, itemhandler);
+	feed := rss.New(10, true, bloghandler, blogposthandler);
 
 	// Log start
 	log.Printf("Spawning subscriber to %s",uri)	
 
 	// Loop endlessly
 	for {
-		// Build a new client
-		transport := http.Transport{}
-
-		client := &http.Client{
-			Transport: &transport,
-		} 	
-
 		// Fetch feed and log errors
-		if err := feed.FetchClient(uri, client, nil); err != nil {
+		if err := feed.FetchClient(uri, gethttpclient(), nil); err != nil {
 			log.Printf("Error fetching %s: %+v", uri, err)
 		}		
 
@@ -62,12 +53,12 @@ func spawnsubscriber(uri string) {
 }
 
 // Changes to bloags
-func feedhandler(feed *rss.Feed, newchannels []*rss.Channel) {
+func bloghandler(feed *rss.Feed, newchannels []*rss.Channel) {
 	log.Printf("Subscribed to %d new channel(s) in %s", len(newchannels), feed.Url)
 }
 
 // Handling new items
-func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
+func blogposthandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 	var content string
 
 	// Log
@@ -75,7 +66,7 @@ func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 
 	// Iterate through new items
 	for _, post := range newposts {
-		
+
 		// Read contents from ATOM or fallback on RSS
 		if post.Content == nil {
 			content = post.Description
@@ -90,7 +81,6 @@ func itemhandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 			author:		post.Author.Name,
 			title:		post.Title,
 			published: 	TimeFromString(post.PubDate),
-			firstseen:	time.Now(),
 			body: 		content,
 		}
 

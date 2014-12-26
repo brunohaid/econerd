@@ -15,16 +15,16 @@ const twitterlist uint32 = 186333198
 var api = &anaconda.TwitterApi{}
 
 // Start new twitter crawler
-func Crawltwitter() {
+func crawltwitter() {
 	// Build the api
 	
 
 	// Kick off fetch
-	go fetch()	
+	go fetchtwitterlist()	
 }
 
 // Fetch the latest tweets
-func fetch() {
+func fetchtwitterlist() {
 	searchResult, err := api.GetSearch("golang", nil)
 	log.Printf("Results: %#v",searchResult)	
 	log.Printf("Error: %#v",err)		
