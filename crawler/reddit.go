@@ -7,12 +7,18 @@ import (
 
 	// Unwrap
 	"encoding/json"
-	// "strconv"
 )
+
+// Define
+type subreddit struct {
+	Name 		string
+	Latest		float64
+
+}	
 
 var (
 	// The subreddits we want to watch
-	subreddits = [...]string{ "economics", "finance" }
+	subreddits = [2]string{ "economics", "finance" }
 )
 
 const (
@@ -22,21 +28,23 @@ const (
 
 // Init reddit crawler
 func crawlreddit() {
-
 	// Spawn a subscriber for each subreddit
-	for _, subreddit := range subreddits {
-		go spawnredditor(subreddit)
+	for _, r := range subreddits {
+
+		// New subredit struct
+		sr := subreddit{
+			Name:		r,
+		}
+
+		// Create routine
+		go spawnredditor(sr)
 	}	
 }
 
 // Spawns a new redditor
-func spawnredditor(subreddit string) {	
+func spawnredditor(sr subreddit) {	
 	// Log start
-	log.Printf("Started listening to subreddit %s",subreddit)
-
-	var (
-		lastpost float64
-	)	
+	log.Printf("Started listening to subreddit %s",sr.Name)
 
 	// Unwrap JSON
 	type structure struct {
@@ -57,7 +65,7 @@ func spawnredditor(subreddit string) {
 	}	
 
 	// Define URI
-	uri := redditbaseurl + "/r/" + subreddit + redditchannel
+	uri := redditbaseurl + "/r/" + sr.Name + redditchannel
 
 	// Loop endlessly
 	for {	
@@ -73,7 +81,7 @@ func spawnredditor(subreddit string) {
 		// Iterate through items
 		for _, post := range s.Data.Children {
 			// See if it's newer than the last we knew
-			if post.Data.Ts < lastpost {
+			if post.Data.Ts <= sr.Latest {
 				// Discard
 				continue
 
@@ -98,9 +106,9 @@ func spawnredditor(subreddit string) {
 
 				// Build proper Mention, map fields
 				mention := Mention{
-					id:				post.Data.Id,
-					url:			redditbaseurl + post.Data.Permalink,					
+					id:				post.Data.Id,				
 					kind:			"reddit",
+					url:			redditbaseurl + post.Data.Permalink,						
 					author:			post.Data.Author,
 					target:			post.Data.Url,			
 					mentioned:		time.Unix(int64(post.Data.Ts),0),
@@ -114,7 +122,7 @@ func spawnredditor(subreddit string) {
 		} 
 
 		// Set the timestamp to the newest we processed
-		lastpost = s.Data.Children[0].Data.Ts
+		sr.Latest = s.Data.Children[0].Data.Ts
 
 		// Wait until next update
 		time.Sleep(time.Minute)

@@ -2,6 +2,11 @@ package crawler
 
 import "log"
 
+var (
+	// Cache processed IDs
+	knownids map[string]bool
+)
+
 // If a new item was found
 func AddItem(item Item) {
 	// Log it
