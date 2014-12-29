@@ -47,13 +47,13 @@ func AddPost(post Post) {
 	if post.item.id == "" { post.item.hash() }
 	
 	// Log it
-	log.Printf("ITEM on %#v, %#v",post.item.id, post.item.url)
+	log.Printf("ITEM %s on %s by %s, %s",post.item.id, post.item.kind, post.item.author, post.item.url)
 }
 
 // If a new mention was found
 func AddMention(mention Mention) {
 	// Log it
-	log.Printf("MENTION on %s: %s",mention.item.kind,trimurl(mention.target))
+	log.Printf("MENTION %s on %s by %s, %s",mention.item.id, mention.item.kind, mention.item.author, mention.item.url)	
 }
 
 

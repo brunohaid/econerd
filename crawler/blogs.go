@@ -105,11 +105,24 @@ func blogposthandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 		// Build proper item
 		item := Item{
 			kind:		"rss",
-			url: 		post.Links[0].Href,
 			author:		post.Author.Name,
 			published: 	TimeFromString(post.PubDate),
 			title:		post.Title,			
 			body: 		content,
+		}
+
+		// If we have multiple links
+		if len(post.Links) > 1 {
+			// Cycle through them
+			for _, link := range post.Links {
+				// And try to assign alternate
+				if link.Rel == "alternate" { item.url = link.Href }
+			}
+		}
+
+		// Always fall back to first link
+		if item.url == "" {
+			item.url = post.Links[0].Href
 		}
 
 		post := Post{

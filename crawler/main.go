@@ -52,5 +52,5 @@ func Init() {
 	crawlblogs()		
 
 	// Spawn Subreddit subscriber routines
-	crawlreddit()			
+	// crawlreddit()			
 }
