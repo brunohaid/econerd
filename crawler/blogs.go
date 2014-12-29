@@ -9,27 +9,58 @@ import (
 	rss "github.com/jteeuwen/go-pkg-rss"
 )
 
+// List blogs 
+// TODO: Move into config file / DB
+var (
+	blogs = [...]string{
+		"http://alephblog.com/feed/",
+		"http://baselinescenario.com/feed/",
+		"http://blog.mpettis.com/feed/",
+		"http://blogs.reuters.com/anatole-kaletsky/feed/",
+		"http://blogs.wsj.com/economics/feed/",
+		"http://coppolacomment.blogspot.com/feeds/posts/default?alt=rss",
+		"http://crookedtimber.org/feed/",
+		"http://delong.typepad.com/sdj/atom.xml",
+		"http://equitablegrowth.org/feed/",
+		"http://fistfulofeuros.net/feed/",
+		"http://ftalphaville.ft.com/feed/",
+		"http://johnquiggin.com/feed/",
+		"http://krugman.blogs.nytimes.com/feed/",
+		"http://maxspeak.net/feed/",
+		"http://thereformedbroker.com/feed/",
+		"http://yanisvaroufakis.eu/feed/",
+
+		"http://feeds.feedburner.com/BronteCapital",
+		"http://feeds.feedburner.com/EconomistsView",		
+		"http://feeds.feedburner.com/dealbreaker",
+		"http://feeds.feedburner.com/espeak",
+		"http://feeds.feedburner.com/JaredBernstein",
+		"http://feeds.feedburner.com/MacroAndOtherMarketMusings",
+		"http://feeds.feedburner.com/marginalrevolution",
+		"http://feeds.feedburner.com/NakedCapitalism",
+		"http://feeds.feedburner.com/neweconomicperspectives/yMfv",
+		"http://feeds.feedburner.com/TheBigPicture",				
+
+		"http://www.bloombergview.com/rss",		
+		"http://www.economist.com/blogs/freeexchange/atom.xml",
+		"http://www.economist.com/sections/economics/rss.xml",
+		"http://www.huffingtonpost.com/author/index.php?author=ben-walsh",
+		"http://www.interfluidity.com/feed",
+		"http://www.nextnewdeal.net/rss.xml",
+		"https://www.pehub.com/feed/",
+		"http://www.project-syndicate.org/rss",
+		"http://www.slate.com/all.fulltext.matthew_yglesias.rss",
+		"http://www.vox.com/authors/matthew-yglesias/rss",
+	}
+)
+
+
 // Crawl a single blog from the list, look for optional digest items
 func crawlblogs() {
-	// go spawnsubscriber("http://ftalphaville.ft.com/feed/")
-	go spawnblogsubscriber("http://www.bloombergview.com/rss")
-	go spawnblogsubscriber("http://feeds.feedburner.com/EconomistsView")
-	// go spawnsubscriber("https://medium.com/feed/bull-market")
-	// go spawnsubscriber("http://www.interfluidity.com/feed") 
-	// http://thereformedbroker.com/feed/ http://delong.typepad.com/sdj/atom.xml 
-	// http://feeds.feedburner.com/TheBigPicture http://feeds.feedburner.com/dealbreaker
-	// http://feeds.feedburner.com/marginalrevolution/feed http://alephblog.com/feed/
-	// http://feeds.feedburner.com/NakedCapitalism http://www.huffingtonpost.com/author/index.php?author=ben-walsh
-	// http://johnquiggin.com/feed/ http://crookedtimber.org/feed/ http://fistfulofeuros.net/feed/ http://feeds.feedburner.com/neweconomicperspectives/yMfv
-	// http://yanisvaroufakis.eu/feed/  http://feeds.feedburner.com/espeak http://krugman.blogs.nytimes.com/feed/ http://baselinescenario.com/feed/
-	// http://www.vox.com/authors/matthew-yglesias/rss http://www.project-syndicate.org/rss
-	// http://www.economist.com/sections/economics/rss.xml http://www.economist.com/blogs/freeexchange/atom.xml 
-	// http://blogs.wsj.com/economics/feed/ http://equitablegrowth.org/feed/ http://feeds.feedburner.com/JaredBernstein?format=xml
-	// http://feeds.feedburner.com/MacroAndOtherMarketMusings?format=xml http://www.slate.com/all.fulltext.matthew_yglesias.rss
-	// http://blogs.reuters.com/anatole-kaletsky/feed/ http://feeds.feedburner.com/blogspot/XqoV http://www.nextnewdeal.net/rss.xml
-	// http://maxspeak.net/feed/ https://www.pehub.com/feed/ http://feeds.feedburner.com/BronteCapital?format=xml http://coppolacomment.blogspot.com/feeds/posts/default
-	// http://noahpinionblog.blogspot.com/feeds/posts/default http://feeds.feedburner.com/EconomistsView
-
+	//go spawnblogsubscriber("http://coppolacomment.blogspot.com/feeds/posts/default?alt=rss")
+	for _, blog := range blogs {
+		go spawnblogsubscriber(blog)
+	}	
 }
 
 // Spawns a new reader
@@ -60,9 +91,6 @@ func bloghandler(feed *rss.Feed, newchannels []*rss.Channel) {
 // Handling new items
 func blogposthandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 	var content string
-
-	// Log
-	log.Printf("%d new item(s) in %s", len(newposts), feed.Url)
 
 	// Iterate through new items
 	for _, post := range newposts {

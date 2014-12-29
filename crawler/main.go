@@ -53,7 +53,7 @@ func Init() {
 	// crawltwitter()
 
 	// Spawn RSS reader routines
-	// crawlblogs()		
+	crawlblogs()		
 
 	// Spawn Subreddit subscriber routines
 	crawlreddit()			
