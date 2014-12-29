@@ -14,21 +14,17 @@ type Item struct {
 	title			string			`json:"title"`
 	author			string			`json:"author"`
 	published		time.Time		`json:"published"`
-	firstseen		time.Time		`json:"firstseen"`
 	url				string			`json:"url"`
 	body			string			`json:"body"`
 }
 
+type Post struct{
+	item 			Item
+}
+
 type Mention struct {
-	// See id comment at Item
-	id				string			`json:"id"`	
+	item 			Item
 	target			string			`json:"target"`
-	kind			string			`json:"type"`
-	author			string			`json:"by"`
-	url				string			`json:"url"`
-	mentioned		time.Time 		`json:"timestamp"`
-	title			string			`json:"title"`
-	body			string			`json:"body"`
 }
 
 type Person struct {

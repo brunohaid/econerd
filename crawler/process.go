@@ -39,21 +39,21 @@ var (
 )
 
 // If a new item was found
-func AddItem(item Item) {
+func AddPost(post Post) {
 	// Resolve final destination trimmed URL
-	item.resolve()
+	post.item.resolve()
 
 	// Generate id if none exists yet
-	if item.id == "" { item.hash() }
+	if post.item.id == "" { post.item.hash() }
 	
 	// Log it
-	log.Printf("ITEM on %#v, %#v",item.id, item.url)
+	log.Printf("ITEM on %#v, %#v",post.item.id, post.item.url)
 }
 
 // If a new mention was found
 func AddMention(mention Mention) {
 	// Log it
-	log.Printf("MENTION on %s: %s",mention.kind,trimurl(mention.target))
+	log.Printf("MENTION on %s: %s",mention.item.kind,trimurl(mention.target))
 }
 
 

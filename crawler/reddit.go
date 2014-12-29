@@ -79,41 +79,41 @@ func spawnredditor(sr subreddit) {
 		json.NewDecoder(raw.Body).Decode(&s)					
 
 		// Iterate through items
-		for _, post := range s.Data.Children {
+		for _, child := range s.Data.Children {
 			// See if it's newer than the last we knew
-			if post.Data.Ts <= sr.Latest {
-				// Discard
-				continue
+			if child.Data.Ts <= sr.Latest { continue }
+
+			// Build proper item, map fields
+			item := Item{
+				id:			child.Data.Id,
+				kind:		"reddit",		
+				author:		child.Data.Author,
+				published: 	time.Unix(int64(child.Data.Ts),0),
+				title:		child.Data.Title,					
+				body: 		child.Data.Selftext,
+			}
 
 			// If it's a posting instead of a link, start working on creating an Item				
-			} else if post.Data.Self {
+			if child.Data.Self {
+				// Set Post URL
+				item.url = child.Data.Url			
 
-				// Build proper item, map fields
-				item := Item{
-					id:			post.Data.Id,
-					kind:		"reddit",
-					url: 		post.Data.Url,
-					author:		post.Data.Author,
-					published: 	time.Unix(int64(post.Data.Ts),0),
-					title:		post.Data.Title,					
-					body: 		post.Data.Selftext,
+				// Build post
+				post := Post{
+					item: item,
 				}		
 
 				// Send it off for processing
-				go AddItem(item)				
+				go AddPost(post)				
 
 			} else {
+				// Set mention post url
+				item.url = redditbaseurl + child.Data.Permalink
 
-				// Build proper Mention, map fields
+				// Build proper Mention
 				mention := Mention{
-					id:				post.Data.Id,				
-					kind:			"reddit",
-					url:			redditbaseurl + post.Data.Permalink,						
-					author:			post.Data.Author,
-					target:			post.Data.Url,			
-					mentioned:		time.Unix(int64(post.Data.Ts),0),
-					title:			post.Data.Title,
-					body:			post.Data.Selftext,
+					item: item,
+					target: child.Data.Url,			
 				}		
 
 				// Send it off for processing

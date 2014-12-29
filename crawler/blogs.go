@@ -107,12 +107,16 @@ func blogposthandler(feed *rss.Feed, ch *rss.Channel, newposts []*rss.Item) {
 			kind:		"rss",
 			url: 		post.Links[0].Href,
 			author:		post.Author.Name,
-			title:		post.Title,
 			published: 	TimeFromString(post.PubDate),
+			title:		post.Title,			
 			body: 		content,
 		}
 
+		post := Post{
+			item: item,
+		}
+
 		// Send it off for processing
-		go AddItem(item)
+		go AddPost(post)
 	}
 }
